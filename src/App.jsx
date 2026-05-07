@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const promptText = [
-  "Create an n8n workflow JSON for an AI-powered customer service email agent with the following exact specifications:",
+  "Build an AI-powered customer service email agent workflow with these exact requirements:",
   "",
   "### Trigger",
   "",
@@ -36,12 +36,6 @@ const promptText = [
   "- Subject and Message fields use `$fromAI()` expressions",
   "- threadId from `$json.threadId`",
   "- sendTo: `={{ $('Gmail Trigger').item.json.from.value[0].address }}`",
-  "",
-  "### Output Requirements",
-  "",
-  "- Valid n8n downloadable JSON file with `nodes`, `connections`, `settings` (`executionOrder: v1`), `pinData: {}`, `active: false` ",
-  "",
-  '- **Do NOT include real credential id values** \u2014 use placeholder strings like `"your-credential-id"`',
 ].join("\n");
 
 const googleDocsLinkPlaceholder =

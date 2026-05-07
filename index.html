@@ -216,7 +216,7 @@
               <p class="hint">Copy this prompt and paste it into your AI tool.</p>
             </div>
 
-            <pre class="prompt-block" id="promptText">Create an n8n workflow JSON for an AI-powered customer service email agent with the following exact specifications:
+            <pre class="prompt-block" id="promptText">Build an AI-powered customer service email agent workflow with these exact requirements:
 
 ### Trigger
 
@@ -250,13 +250,7 @@
 
 - Subject and Message fields use `$fromAI()` expressions
 - threadId from `$json.threadId`
-- sendTo: `={{ $('Gmail Trigger').item.json.from.value[0].address }}`
-
-### Output Requirements
-
-- Valid n8n downloadable JSON file with `nodes`, `connections`, `settings` (`executionOrder: v1`), `pinData: {}`, `active: false`
-
-- **Do NOT include real credential id values** &mdash; use placeholder strings like `"your-credential-id"`</pre>
+- sendTo: `={{ $('Gmail Trigger').item.json.from.value[0].address }}`</pre>
 
             <div class="card-actions">
               <button type="button" class="copy-button" id="copyButton">Copy prompt</button>

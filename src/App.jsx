@@ -44,7 +44,8 @@ const promptText = [
   '- **Do NOT include real credential id values** \u2014 use placeholder strings like `"your-credential-id"`',
 ].join("\n");
 
-const googleDocsLinkPlaceholder = "https://docs.google.com/document/d/YOUR_DOCUMENT_ID/edit";
+const googleDocsLinkPlaceholder =
+  "https://docs.google.com/document/d/199i7VHTfVv1vaLtXhXv6EKxgG4wwbnKX13e93nGXUe8/edit?tab=t.0";
 const feedbackDurationMs = 2400;
 
 function App() {

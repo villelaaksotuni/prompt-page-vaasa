@@ -132,16 +132,6 @@
         margin-top: 16px;
       }
 
-      .copy-section {
-        margin-top: 22px;
-        padding-top: 20px;
-        border-top: 1px solid #e0e6ec;
-      }
-
-      .copy-section .hint {
-        margin-bottom: 14px;
-      }
-
       .copy-button {
         border: 0;
         border-radius: 12px;
@@ -243,7 +233,7 @@
 |------|------|---------|----------------|--------------|
 | OpenAI Chat Model | `@n8n/n8n-nodes-langchain.lmChatOpenAi` | 1.2 | `ai_languageModel` | Model: `gpt-4o-mini` |
 | Simple Memory | `@n8n/n8n-nodes-langchain.memoryBufferWindow` | 1.3 | `ai_memory` | sessionIdType: `customKey`, sessionKey: `={{ $json.id }}` |
-| Google Docs Tool | `n8n-nodes-base.googleDocsTool` | 2 | `ai_tool` | operation: `get`, documentURL: `199i7VHTfVv1vaLtXhXv6EKxgG4wwbnKX13e93nGXUe8` |
+| Google Docs Tool | `n8n-nodes-base.googleDocsTool` | 2 | `ai_tool` | operation: `get`, documentURL: `https://docs.google.com/document/d/199i7VHTfVv1vaLtXhXv6EKxgG4wwbnKX13e93nGXUe8/edit?tab=t.0` |
 | Gmail Tool &ndash; Create Draft | `n8n-nodes-base.gmailTool` | 2.1 | `ai_tool` | resource: `draft`, subject &amp; message via `$fromAI()`, sendTo from Gmail Trigger |
 
 ### Gmail Draft Tool Details
@@ -256,23 +246,6 @@
               <button type="button" class="copy-button" id="copyButton">Copy prompt</button>
               <p class="feedback" id="feedback" role="status" hidden></p>
             </div>
-
-            <div class="copy-section">
-              <span class="step-label">Google Docs Placeholder</span>
-              <h2>FAQ document link</h2>
-              <p class="hint">
-                Replace the placeholder ID with the attendee's Google Docs FAQ document ID.
-              </p>
-
-              <pre class="prompt-block" id="googleDocsLink">https://docs.google.com/document/d/199i7VHTfVv1vaLtXhXv6EKxgG4wwbnKX13e93nGXUe8/edit?tab=t.0</pre>
-
-              <div class="card-actions">
-                <button type="button" class="copy-button" id="copyDocsButton">
-                  Copy Google Docs link
-                </button>
-                <p class="feedback" id="docsFeedback" role="status" hidden></p>
-              </div>
-            </div>
           </article>
         </section>
 
@@ -282,38 +255,27 @@
 
     <script>
       const copyButton = document.getElementById("copyButton");
-      const copyDocsButton = document.getElementById("copyDocsButton");
       const promptText = document.getElementById("promptText");
-      const googleDocsLink = document.getElementById("googleDocsLink");
       const feedback = document.getElementById("feedback");
-      const docsFeedback = document.getElementById("docsFeedback");
 
-      const copyText = async (text, feedbackElement, successMessage) => {
+      copyButton.addEventListener("click", async () => {
         try {
           if (!navigator.clipboard || typeof navigator.clipboard.writeText !== "function") {
             throw new Error("Clipboard API not available");
           }
 
-          await navigator.clipboard.writeText(text);
-          feedbackElement.textContent = successMessage;
-          feedbackElement.className = "feedback success";
+          await navigator.clipboard.writeText(promptText.textContent);
+          feedback.textContent = "Prompt copied.";
+          feedback.className = "feedback success";
         } catch (error) {
-          feedbackElement.textContent = "Copy failed. Copy it manually.";
-          feedbackElement.className = "feedback error";
+          feedback.textContent = "Copy failed. Copy the prompt manually.";
+          feedback.className = "feedback error";
         }
 
-        feedbackElement.hidden = false;
+        feedback.hidden = false;
         window.setTimeout(() => {
-          feedbackElement.hidden = true;
+          feedback.hidden = true;
         }, 2400);
-      };
-
-      copyButton.addEventListener("click", async () => {
-        await copyText(promptText.textContent, feedback, "Prompt copied.");
-      });
-
-      copyDocsButton.addEventListener("click", async () => {
-        await copyText(googleDocsLink.textContent, docsFeedback, "Google Docs link copied.");
       });
     </script>
   </body>

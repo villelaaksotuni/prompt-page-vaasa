@@ -28,7 +28,7 @@ const promptText = [
   "|------|------|---------|----------------|--------------|",
   "| OpenAI Chat Model | `@n8n/n8n-nodes-langchain.lmChatOpenAi` | 1.2 | `ai_languageModel` | Model: `gpt-4o-mini` |",
   "| Simple Memory | `@n8n/n8n-nodes-langchain.memoryBufferWindow` | 1.3 | `ai_memory` | sessionIdType: `customKey`, sessionKey: `={{ $json.id }}` |",
-  "| Google Docs Tool | `n8n-nodes-base.googleDocsTool` | 2 | `ai_tool` | operation: `get`, documentURL: `199i7VHTfVv1vaLtXhXv6EKxgG4wwbnKX13e93nGXUe8` |",
+  "| Google Docs Tool | `n8n-nodes-base.googleDocsTool` | 2 | `ai_tool` | operation: `get`, documentURL: `https://docs.google.com/document/d/199i7VHTfVv1vaLtXhXv6EKxgG4wwbnKX13e93nGXUe8/edit?tab=t.0` |",
   "| Gmail Tool \u2013 Create Draft | `n8n-nodes-base.gmailTool` | 2.1 | `ai_tool` | resource: `draft`, subject & message via `$fromAI()`, sendTo from Gmail Trigger |",
   "",
   "### Gmail Draft Tool Details",
@@ -38,45 +38,30 @@ const promptText = [
   "- sendTo: `={{ $('Gmail Trigger').item.json.from.value[0].address }}`",
 ].join("\n");
 
-const googleDocsLinkPlaceholder =
-  "https://docs.google.com/document/d/199i7VHTfVv1vaLtXhXv6EKxgG4wwbnKX13e93nGXUe8/edit?tab=t.0";
 const feedbackDurationMs = 2400;
 
 function App() {
-  const [feedbackByKey, setFeedbackByKey] = useState({});
+  const [feedback, setFeedback] = useState(null);
 
-  const handleCopy = async (key, text, successMessage) => {
+  const handleCopy = async () => {
     try {
       if (!navigator.clipboard || typeof navigator.clipboard.writeText !== "function") {
         throw new Error("Clipboard API not available");
       }
 
-      await navigator.clipboard.writeText(text);
-      setFeedbackByKey((current) => ({
-        ...current,
-        [key]: { type: "success", message: successMessage },
-      }));
+      await navigator.clipboard.writeText(promptText);
+      setFeedback({ type: "success", message: "Prompt copied." });
     } catch (error) {
-      setFeedbackByKey((current) => ({
-        ...current,
-        [key]: {
-          type: "error",
-          message: "Copy failed. Copy it manually.",
-        },
-      }));
+      setFeedback({
+        type: "error",
+        message: "Copy failed. Copy the prompt manually.",
+      });
     } finally {
       window.setTimeout(() => {
-        setFeedbackByKey((current) => {
-          const next = { ...current };
-          delete next[key];
-          return next;
-        });
+        setFeedback(null);
       }, feedbackDurationMs);
     }
   };
-
-  const promptFeedback = feedbackByKey.prompt;
-  const docsFeedback = feedbackByKey.googleDocsLink;
 
   return (
     <div className="page-shell">
@@ -100,59 +85,17 @@ function App() {
             <pre className="prompt-block">{promptText}</pre>
 
             <div className="card-actions">
-              <button
-                type="button"
-                className="copy-button"
-                onClick={() => handleCopy("prompt", promptText, "Prompt copied.")}
-              >
+              <button type="button" className="copy-button" onClick={handleCopy}>
                 Copy prompt
               </button>
-              {promptFeedback ? (
+              {feedback ? (
                 <p
-                  className={
-                    promptFeedback.type === "success" ? "feedback success" : "feedback error"
-                  }
+                  className={feedback.type === "success" ? "feedback success" : "feedback error"}
                   role="status"
                 >
-                  {promptFeedback.message}
+                  {feedback.message}
                 </p>
               ) : null}
-            </div>
-
-            <div className="copy-section">
-              <span className="step-label">Google Docs Placeholder</span>
-              <h2>FAQ document link</h2>
-              <p className="hint">
-                Replace the placeholder ID with the attendee's Google Docs FAQ document ID.
-              </p>
-
-              <pre className="prompt-block">{googleDocsLinkPlaceholder}</pre>
-
-              <div className="card-actions">
-                <button
-                  type="button"
-                  className="copy-button"
-                  onClick={() =>
-                    handleCopy(
-                      "googleDocsLink",
-                      googleDocsLinkPlaceholder,
-                      "Google Docs link copied.",
-                    )
-                  }
-                >
-                  Copy Google Docs link
-                </button>
-                {docsFeedback ? (
-                  <p
-                    className={
-                      docsFeedback.type === "success" ? "feedback success" : "feedback error"
-                    }
-                    role="status"
-                  >
-                    {docsFeedback.message}
-                  </p>
-                ) : null}
-              </div>
             </div>
           </article>
         </section>
